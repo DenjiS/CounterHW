@@ -3,8 +3,19 @@ using UnityEngine;
 
 public class CounterView : MonoBehaviour
 {
+    [SerializeField] private Counter _counter;
     [SerializeField] private TMP_Text _text;
 
-    public void Render(int count) =>
+    private void OnEnable()
+    {
+        _counter.Changed += Render;
+    }
+
+    private void OnDisable()
+    {
+        _counter.Changed -= Render;
+    }
+
+    private void Render(int count) =>
         _text.text = count.ToString();
 }

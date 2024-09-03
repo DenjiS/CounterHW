@@ -1,25 +1,32 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Counter : MonoBehaviour
 {
-    [SerializeField] private CounterView _view;
+    private const int LeftMouseButtonNumber = 0;
+
     [SerializeField] private float _countTime = 0.5f;
 
     private WaitForSeconds _delay;
     private Coroutine _counting;
     private int _value = 0;
 
+    public event UnityAction<int> Changed;
+
     private void Awake()
     {
         _delay = new WaitForSeconds(_countTime);
-        _view.Render(_value);
+    }
+
+    private void Start()
+    {
+        Changed?.Invoke(_value);
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(LeftMouseButtonNumber))
         {
             if (_counting is null)
             {
@@ -38,7 +45,7 @@ public class Counter : MonoBehaviour
         while (true)
         {
             yield return _delay;
-            _view.Render(++_value);
+            Changed?.Invoke(++_value);
         }
     }
 }
